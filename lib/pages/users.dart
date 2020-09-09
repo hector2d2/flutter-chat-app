@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'package:chatApp/services/auth_services.dart';
 import 'package:chatApp/models/user.dart';
 
 class UsersPage extends StatefulWidget {
@@ -14,28 +16,34 @@ class _UsersPageState extends State<UsersPage> {
       RefreshController(initialRefresh: false);
 
   final users = [
-    User(uid: '1', nombre: 'maria', email: 'test1@test.com', online: true),
-    User(uid: '2', nombre: 'anni', email: 'test2@test.com', online: false),
-    User(uid: '3', nombre: 'jessica', email: '3@test.com', online: true),
+    Usuario(uid: '1', nombre: 'maria', email: 'test1@test.com', online: true),
+    Usuario(uid: '2', nombre: 'anni', email: 'test2@test.com', online: false),
+    Usuario(uid: '3', nombre: 'jessica', email: 'test3@test.com', online: true),
   ];
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Mi nombre',
+          authService.usuario.nombre,
           style: TextStyle(
             color: Colors.black87,
           ),
         ),
         elevation: 1,
+        centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(
             Icons.exit_to_app,
             color: Colors.black87,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, 'login');
+            AuthService.deleteToken();
+          },
         ),
         actions: [
           Container(
@@ -73,7 +81,7 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  ListTile userListTile(User user) {
+  ListTile userListTile(Usuario user) {
     return ListTile(
       title: Text(user.nombre),
       subtitle: Text(user.email),
